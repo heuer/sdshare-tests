@@ -227,50 +227,26 @@ public class AbstractServerTestCase extends TestCase {
 
     /**
      * Returns the overview feed.
-     * 
-     * The 
      *
      * The feed is validated.
      *
+     * @return The overview feed as DOM.
+     * @throws Exception In case of an error.
      */
     protected Document fetchOverviewFeed() throws Exception {
-        final URI uri = getServerAddress();
-        final Document doc = _makeDocument(fetchAtomFeed(uri), uri);
-        testAtomFeedValidity(doc);
-        return doc;
+        return fetchAtomFeedAsDOM(getServerAddress());
     }
 
     /**
-     * Returns the collection feed.
+     * Returns the feed under the specified URI.
      *
      * The feed is validated.
      *
+     * @param uri The URI to retrieve the feed from.
+     * @return The feed as DOM.
+     * @throws Exception In case of an error.
      */
-    protected Document fetchCollectionFeed(final URI uri) throws Exception {
-        final Document doc = _makeDocument(fetchAtomFeed(uri), uri);
-        testAtomFeedValidity(doc);
-        return doc;
-    }
-
-    /**
-     * Returns the snapshot feed.
-     *
-     * The feed is validated.
-     *
-     */
-    protected Document fetchSnapshotFeed(final URI uri) throws Exception {
-        final Document doc = _makeDocument(fetchAtomFeed(uri), uri);
-        testAtomFeedValidity(doc);
-        return doc;
-    }
-
-    /**
-     * Returns the fragment feed.
-     *
-     * The feed is validated.
-     *
-     */
-    protected Document fetchFragmentFeed(final URI uri) throws Exception {
+    protected Document fetchAtomFeedAsDOM(final URI uri) throws Exception {
         final Document doc = _makeDocument(fetchAtomFeed(uri), uri);
         testAtomFeedValidity(doc);
         return doc;
