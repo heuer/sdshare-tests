@@ -1,0 +1,50 @@
+/*
+ * Gradle 0.9 build file.
+ * 
+ * - Download Gradle from <http://www.gradle.org/>
+ * - Execute gradle build
+ * 
+ * TODO: Zip / Tar archives
+ *
+ */
+group = 'org.isotopicmaps.sdshare'
+version = '0.1.0'
+bundleVersion = version
+
+project.projectName = 'SDShare Server Tests'
+project.projectDescription = project.projectName // TODO
+project.vendorName = 'Semagia'
+project.vendorURL = 'http://www.semagia.com/'
+project.licenseName = 'Apache Software License, Version 2.0'
+project.licenseURL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+
+apply plugin: 'java'
+apply plugin: 'osgi'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+
+defaultTasks 'clean', 'build'
+
+//TODO: Remove me once <http://jira.codehaus.org/browse/GRADLE-1079> is fixed
+eclipseClasspath.variables = [:]
+eclipseClasspath.downloadSources = false
+
+gradle.taskGraph.whenReady {taskGraph ->
+   if (!taskGraph.hasTask(':release')) {
+       version += '-SNAPSHOT'
+   }
+}
+
+repositories {
+    mavenCentral()
+    mavenRepo urls: 'http://www.tmapi.org/maven-repository/'
+    mavenRepo urls: 'http://repository.semagia.com/releases/'
+}
+
+dependencies {
+    compile 'junit:junit:4.8.1', 
+            'xom:xom:1.2.5', 
+            'org.tmapi:tmapi:[2.0.2,)',
+            'org.tmapix:tmapix-io:1.0.0'
+}
+
