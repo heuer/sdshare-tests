@@ -33,19 +33,19 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Tests against the 
- * <a href="http://www.egovpt.org/fg/CWA_Part_1b#head-c41ad0664f1b6fb60343d7369e78ad90ea9b1bc3">fragments feed</a>.
+ * <a href="http://www.egovpt.org/fg/CWA_Part_1b#head-103ee1c2a08e2c511bfbee5450274fcbd4e19dd6">snapshots feed</a>.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  * @version $Rev:$ - $Date:$
  */
 @RunWith(Parameterized.class)
-public class TestFragmentsFeed extends AbstractServerTestCase {
+public class TestSnapshotsFeed extends AbstractServerTestCase {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestFragmentsFeed.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestSnapshotsFeed.class);
 
     private final URI _uri;
 
-    public TestFragmentsFeed(final URI uri) {
+    public TestSnapshotsFeed(final URI uri) {
         _uri = uri;
     }
 
@@ -53,7 +53,7 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
     public static Collection<Object> makeTestCases() {
         final Collection<Object> result = new ArrayList<Object>();
         try {
-            for (URI uri: Utils.fetchFragmentsFeedURIs()) {
+            for (URI uri: Utils.fetchSnapshotsFeedURIs()) {
                 result.add(new Object[] { uri });
             }
         }
@@ -64,20 +64,11 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
     }
 
     @Test
-    public void testFragmentFeed() throws Exception {
+    public void testSnapshotsFeed() throws Exception {
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
-        final Nodes srcLocPrefixNodes = query(feed, "atom:feed/sd:ServerSrcLocatorPrefix");
-        assertEquals(1, srcLocPrefixNodes.size());
-        final Element srcLocPrefix = (Element) srcLocPrefixNodes.get(0);
-        assertFalse("The ServerSrcLocatorPrefix must not be empty", srcLocPrefix.getValue().isEmpty());
-        final Nodes entries = query(feed, "atom:entry[sd:TopicSI]");
-        if (entries.size() == 0) {
-            LOG.info("No fragment entries found in " + feed.getBaseURI());
-            return;
-        }
-        final Nodes links = query(feed, "atom:entry[sd:TopicSI]/atom:link[@rel='" + REL_ALTERNATE + "']");
+        final Nodes links = query(feed, "atom:entry/atom:link[@rel='" + REL_ALTERNATE + "']");
         if (links.size() == 0) {
-            fail(feed.getBaseURI() + " provides no links to fragments");
+            LOG.info("No snapshots found");
         }
         for (int i=0; i<links.size(); i++) {
             Element link = (Element) links.get(i);

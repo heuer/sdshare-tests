@@ -123,6 +123,11 @@ public class AbstractServerTestCase extends TestCase implements IConstants{
             for (int j=0; j<authors.size(); j++) {
                 validateAuthor(authors.get(i));
             }
+            // Each entry must have a link rel="alternate" iff it has no content
+            if (query(entry, "atom:content").size() == 0) {
+                assertTrue("The entry " + entry.toXML() + " has no atom:content and no atom:link[@rel='alternate'] child", 
+                        query(entry, "atom:link[@rel='alternate']").size() > 0);
+            }
         }
     }
 
