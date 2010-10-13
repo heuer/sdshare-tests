@@ -24,6 +24,11 @@ package org.isotopicmaps.sdsharetests;
 public interface IConstants {
 
     /**
+     * Constant for the server address property name.
+     */
+    public static final String SERVER_ADDRESS_PROPERTY = "org.isotopicmaps.sdshare.serveraddress";
+
+    /**
      * Atom 1.0 namespace.
      */
     public final static String NS_ATOM = "http://www.w3.org/2005/Atom";

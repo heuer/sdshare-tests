@@ -17,7 +17,8 @@ package org.isotopicmaps.sdsharetests.server;
 
 import java.net.URI;
 
-import org.isotopicmaps.sdsharetests.IConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import nu.xom.Attribute;
 import nu.xom.Document;
@@ -33,6 +34,8 @@ import nu.xom.Nodes;
  */
 public class TestOverviewFeed extends AbstractServerTestCase {
 
+    private final static Logger LOG = LoggerFactory.getLogger(TestOverviewFeed.class);
+
     /**
      * Checks the overview feed for links to collections.
      *
@@ -41,7 +44,10 @@ public class TestOverviewFeed extends AbstractServerTestCase {
     public void testOverviewFeed() throws Exception {
         final Document doc = super.fetchOverviewFeed();
         // Fetch all links which point to a collection.
-        final Nodes links = query(doc, "atom:feed/atom:entry/atom:link[@rel='" + IConstants.REL_COLLECTION_FEED + "']");
+        final Nodes links = query(doc, "atom:feed/atom:entry/atom:link[@rel='" + REL_COLLECTION_FEED + "']");
+        if (links.size() == 0) {
+            LOG.info("No collection feeds found in " + doc.getBaseURI());
+        }
         for (int i=0; i<links.size(); i++) {
             Element link = (Element) links.get(i);
             Attribute attr = link.getAttribute("href");
@@ -49,7 +55,7 @@ public class TestOverviewFeed extends AbstractServerTestCase {
             final URI href = URI.create(doc.getBaseURI()).resolve(attr.getValue());
             attr = link.getAttribute("type");
             // Assume Atom iff the "type" attribute is not provided
-            final String mediaType = attr != null ? attr.getValue() : IConstants.MEDIA_TYPE_ATOM_XML;
+            final String mediaType = attr != null ? attr.getValue() : MEDIA_TYPE_ATOM_XML;
             super.testURIRetrieval(href, mediaType);
             super.testWithUnknownMediaType(href);
         }

@@ -18,19 +18,17 @@ package org.isotopicmaps.sdsharetests.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 
 import junit.framework.TestCase;
 
 import org.isotopicmaps.sdsharetests.IConstants;
 import org.isotopicmaps.sdsharetests.MediaType;
+import org.junit.Before;
 
-import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Node;
 import nu.xom.Nodes;
-import nu.xom.XPathContext;
 
 /**
  * Abstract test case which provides some useful utility methods.
@@ -38,68 +36,16 @@ import nu.xom.XPathContext;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  * @version $Rev:$ - $Date:$
  */
-public class AbstractServerTestCase extends TestCase {
-
-    public static final String SERVER_ADDRESS_PROPERTY = "org.isotopicmaps.sdshare.serveraddress";
+public class AbstractServerTestCase extends TestCase implements IConstants{
 
     private static final String _UNKNOWN_MEDIA_TYPE = "application/x-hello-iam+unknown";
 
-    protected static final XPathContext _XPATH_CTX;
-
-    static {
-        _XPATH_CTX = new XPathContext("atom", IConstants.NS_ATOM);
-        _XPATH_CTX.addNamespace("sd", IConstants.NS_SDSHARE);
-    }
-
-    protected URI _serverAddress;
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
-        final String baseURI = System.getProperty(SERVER_ADDRESS_PROPERTY);
-        if (baseURI == null) {
+        if (Utils.getServerAddress() == null) {
             fail("The server address was not found. Undefined system property '" + SERVER_ADDRESS_PROPERTY + "'");
         }
-        _serverAddress = URI.create(baseURI);
-    }
-
-    /**
-     * Returns the address of the server.
-     *
-     * @return The server address, never {@code null}.
-     */
-    protected final URI getServerAddress() {
-        return _serverAddress;
-    }
-
-    /**
-     * 
-     *
-     * @param uri
-     * @return
-     * @throws MalformedURLException
-     * @throws IOException
-     */
-    protected HttpURLConnection connect(final URI uri) throws IOException {
-        return (HttpURLConnection) uri.toURL().openConnection();
-    }
-
-    /**
-     * 
-     *
-     * @param uri
-     * @param acceptHeader
-     * @return
-     * @throws MalformedURLException
-     * @throws IOException
-     */
-    protected HttpURLConnection connect(final URI uri, final String acceptHeader) throws IOException {
-        final HttpURLConnection conn = connect(uri);
-        conn.setRequestProperty("Accept", acceptHeader);
-        return conn;
     }
 
     /**
@@ -112,18 +58,10 @@ public class AbstractServerTestCase extends TestCase {
      * @throws IOException
      */
     protected InputStream fetchAtomFeed(final URI uri) throws IOException {
-        final HttpURLConnection conn = connect(uri, IConstants.MEDIA_TYPE_ATOM_XML);
+        final HttpURLConnection conn = Utils.connect(uri, MEDIA_TYPE_ATOM_XML);
         assertEquals(HttpURLConnection.HTTP_OK, conn.getResponseCode());
         assertTrue(MediaType.ATOM_XML.isCompatible(MediaType.valueOf(conn.getContentType())));
         return conn.getInputStream();
-    }
-
-    private Document _makeDocument(final InputStream in, final URI base) throws Exception {
-        return _makeDocument(in, base.toASCIIString());
-    }
-
-    private Document _makeDocument(final InputStream in, final String base) throws Exception {
-        return new Builder().build(in, base);
     }
 
     /**
@@ -132,8 +70,8 @@ public class AbstractServerTestCase extends TestCase {
      * @node The context node.
      * @query The XPath expression.
      */
-    protected Nodes query(final Node node, final String query) {
-        return node.query(query, _XPATH_CTX);
+    protected static Nodes query(final Node node, final String query) {
+        return node.query(query, Utils.getDefaultXPathContext());
     }
 
     /**
@@ -143,7 +81,7 @@ public class AbstractServerTestCase extends TestCase {
      * @param uri The URI to test
      */
     protected void testWithUnknownMediaType(final URI uri) throws Exception {
-        final HttpURLConnection conn = connect(uri, _UNKNOWN_MEDIA_TYPE);
+        final HttpURLConnection conn = Utils.connect(uri, _UNKNOWN_MEDIA_TYPE);
         assertEquals("Expected a Not Acceptable response for " + uri, HttpURLConnection.HTTP_NOT_ACCEPTABLE, conn.getResponseCode());
     }
 
@@ -160,20 +98,24 @@ public class AbstractServerTestCase extends TestCase {
         validateEntryCommons(feed);
         // If the feed has no author, all entries must have an author
         nodes = query(feed, "atom:author");
-        boolean feedAuthor = false;
+        boolean feedAuthorProvided = false;
         if (nodes.size() > 0) {
-            feedAuthor = true;
+            feedAuthorProvided = true;
             for (int i=0; i<nodes.size(); i++) {
                 validateAuthor(nodes.get(i));
             }
         }
         // Check each atom:entry for validity
         final Nodes entries = query(feed, "atom:entry");
+        if (entries.size() == 0) {
+            //TODO: Is this true?
+            assertTrue("The feed has no entries, therefor the atom:feed must have an atom:author", feedAuthorProvided);
+        }
         for (int i=0; i<entries.size(); i++) {
             Node entry = entries.get(i);
             validateEntryCommons(entry);
             final Nodes authors = query(entry, "atom:author");
-            if (!feedAuthor) {
+            if (!feedAuthorProvided) {
                 // atom:feed has no author, all atom:entry children MUST have an author.
                 assertTrue("atom:feed has no atom:author, each atom:entry must have 1..n atom:author children", 
                             authors.size() > 0);
@@ -206,7 +148,7 @@ public class AbstractServerTestCase extends TestCase {
      */
     protected final void validateAuthor(final Node author) {
         assertNotNull(author);
-        // atom:name is normative
+        // atom:name is required
         Nodes nodes = query(author, "atom:name");
         assertEquals(1, nodes.size());
         assertFalse("atom:name should not be empty", nodes.get(0).getValue().isEmpty());
@@ -233,7 +175,7 @@ public class AbstractServerTestCase extends TestCase {
      * @throws Exception In case of an error.
      */
     protected Document fetchOverviewFeed() throws Exception {
-        return fetchAtomFeedAsDOM(getServerAddress());
+        return fetchAtomFeedAsDOM(Utils.getServerAddress());
     }
 
     /**
@@ -246,7 +188,7 @@ public class AbstractServerTestCase extends TestCase {
      * @throws Exception In case of an error.
      */
     protected Document fetchAtomFeedAsDOM(final URI uri) throws Exception {
-        final Document doc = _makeDocument(fetchAtomFeed(uri), uri);
+        final Document doc = Utils.makeDocument(fetchAtomFeed(uri), uri);
         testAtomFeedValidity(doc);
         return doc;
     }
@@ -259,7 +201,7 @@ public class AbstractServerTestCase extends TestCase {
      * @throws IOException In case of an error.
      */
     protected void testURIRetrieval(final URI uri, final String mediaType) throws IOException {
-        final HttpURLConnection conn = connect(uri, mediaType);
+        final HttpURLConnection conn = Utils.connect(uri, mediaType);
         final MediaType requestMediaType = MediaType.valueOf(mediaType);
         final MediaType responseMediaType = MediaType.valueOf(conn.getContentType());
         assertEquals(HttpURLConnection.HTTP_OK, conn.getResponseCode());
