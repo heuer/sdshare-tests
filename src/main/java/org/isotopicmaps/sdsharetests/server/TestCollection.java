@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  * @version $Rev:$ - $Date:$
  */
-public class TestCollectionFeed extends AbstractServerTestCase {
+public class TestCollection extends AbstractServerTestCase {
 
-    private static Logger LOG = LoggerFactory.getLogger(TestCollectionFeed.class);
+    private static Logger LOG = LoggerFactory.getLogger(TestCollection.class);
 
     /**
      * Extracts the collection links from the overview feed and tests each
@@ -48,7 +48,7 @@ public class TestCollectionFeed extends AbstractServerTestCase {
         // Fetch all links which point to a collection.
         final Nodes links = query(doc, "atom:feed/atom:entry/atom:link[@rel='" + IConstants.REL_COLLECTION_FEED + "'][not(@type) or @type='application/atom+xml']");
         if (links.size() == 0) {
-            LOG.info("No collection feeds found");
+            LOG.info("No collection feeds found in " + doc.getBaseURI());
         }
         for (int i=0; i<links.size(); i++) {
             Element link = (Element) links.get(i);
@@ -81,6 +81,33 @@ public class TestCollectionFeed extends AbstractServerTestCase {
             final String mediaType = attr != null ? attr.getValue() : IConstants.MEDIA_TYPE_ATOM_XML;
             super.testURIRetrieval(href, mediaType);
             super.testWithUnknownMediaType(href);
+            if (IConstants.MEDIA_TYPE_ATOM_XML.equals(mediaType)) {
+                String rel = link.getAttribute("rel").getValue();
+                if (IConstants.REL_FRAGMENTS_FEED.equals(rel)) {
+                    testFragmentFeed(super.fetchAtomFeedAsDOM(href));
+                }
+                else {
+                    testSnapshotFeed(super.fetchAtomFeedAsDOM(href));
+                }
+            }
         }
     }
+
+    private void testSnapshotFeed(final Document feed) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private void testFragmentFeed(final Document feed) {
+        final Nodes srcLocPrefixNodes = query(feed, "atom:feed/sd:ServerSrcLocatorPrefix");
+        assertEquals(1, srcLocPrefixNodes.size());
+        final Element srcLocPrefix = (Element) srcLocPrefixNodes.get(0);
+        assertFalse("The ServerSrcLocatorPrefix must not be empty", srcLocPrefix.getValue().isEmpty());
+        final Nodes entries = query(feed, "atom:entry");
+        if (entries.size() == 0) {
+            LOG.info("No fragment entries found in " + feed.getBaseURI());
+        }
+        
+    }
+
 }
