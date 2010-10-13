@@ -66,10 +66,11 @@ public class TestCollectionFeed extends AbstractServerTestCase {
      */
     private void testCollectionFeed(final Document feed) throws Exception {
         // Fetch all links which point to a collection.
+        final Nodes fragmentFeedLinks = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + IConstants.REL_FRAGMENTS_FEED + "'][not(@type) or @type='application/atom+xml']");
+        assertEquals("Exected one fragment feed link in " + feed.getBaseURI(), 1, fragmentFeedLinks.size());
+        final Nodes snapshotFeedLinks = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + IConstants.REL_SNAPSHOTS_FEED + "'][not(@type) or @type='application/atom+xml']");
+        assertEquals("Expected one snapshot feed link in " + feed.getBaseURI(), 1, snapshotFeedLinks.size());
         final Nodes links = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + IConstants.REL_FRAGMENTS_FEED + "' or @rel='" + IConstants.REL_SNAPSHOTS_FEED + "']");
-        if (links.size() == 0) {
-            LOG.info("No snapshot/fragment feeds found");
-        }
         for (int i=0; i<links.size(); i++) {
             Element link = (Element) links.get(i);
             Attribute attr = link.getAttribute("href");
