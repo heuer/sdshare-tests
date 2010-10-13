@@ -23,6 +23,8 @@ import nu.xom.Element;
 import nu.xom.Nodes;
 
 import org.isotopicmaps.sdsharetests.IConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests against the 
@@ -33,20 +35,46 @@ import org.isotopicmaps.sdsharetests.IConstants;
  */
 public class TestCollectionFeed extends AbstractServerTestCase {
 
+    private static Logger LOG = LoggerFactory.getLogger(TestCollectionFeed.class);
+
     /**
-     * Checks the collection feed for links to snapshot/fragment feeds.
+     * Extracts the collection links from the overview feed and tests each
+     * collection feed.
      *
      * @throws Exception In case of an error.
      */
     public void testCollectionFeed() throws Exception {
         final Document doc = super.fetchOverviewFeed();
         // Fetch all links which point to a collection.
-        final Nodes links = query(doc, "atom:feed/atom:entry/atom:link[@rel='" + IConstants.REL_FRAGMENTS_FEED + "' or @rel='" + IConstants.REL_SNAPSHOTS_FEED + "']");
+        final Nodes links = query(doc, "atom:feed/atom:entry/atom:link[@rel='" + IConstants.REL_COLLECTION_FEED + "'][not(@type) or @type='application/atom+xml']");
+        if (links.size() == 0) {
+            LOG.info("No collection feeds found");
+        }
         for (int i=0; i<links.size(); i++) {
             Element link = (Element) links.get(i);
             Attribute attr = link.getAttribute("href");
             assertNotNull("No href attribute available", attr);
             final URI href = URI.create(doc.getBaseURI()).resolve(attr.getValue());
+            testCollectionFeed(super.fetchAtomFeedAsDOM(href));
+        }
+    }
+
+    /**
+     * Checks the collection feed for links to snapshot/fragment feeds.
+     *
+     * @throws Exception In case of an error.
+     */
+    private void testCollectionFeed(final Document feed) throws Exception {
+        // Fetch all links which point to a collection.
+        final Nodes links = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + IConstants.REL_FRAGMENTS_FEED + "' or @rel='" + IConstants.REL_SNAPSHOTS_FEED + "']");
+        if (links.size() == 0) {
+            LOG.info("No snapshot/fragment feeds found");
+        }
+        for (int i=0; i<links.size(); i++) {
+            Element link = (Element) links.get(i);
+            Attribute attr = link.getAttribute("href");
+            assertNotNull("No href attribute available", attr);
+            final URI href = URI.create(feed.getBaseURI()).resolve(attr.getValue());
             attr = link.getAttribute("type");
             // Assume Atom iff the "type" attribute is not provided
             final String mediaType = attr != null ? attr.getValue() : IConstants.MEDIA_TYPE_ATOM_XML;

@@ -126,7 +126,6 @@ public class AbstractServerTestCase extends TestCase {
         return new Builder().build(in, base);
     }
 
-
     /**
      * Executes an XPath query against the provided {@code node} using the default XPathContext.
      *
@@ -145,7 +144,7 @@ public class AbstractServerTestCase extends TestCase {
      */
     protected void testWithUnknownMediaType(final URI uri) throws Exception {
         final HttpURLConnection conn = connect(uri, _UNKNOWN_MEDIA_TYPE);
-        assertEquals(HttpURLConnection.HTTP_NOT_ACCEPTABLE, conn.getResponseCode());
+        assertEquals("Expected a Not Acceptable response for " + uri, HttpURLConnection.HTTP_NOT_ACCEPTABLE, conn.getResponseCode());
     }
 
     /**
