@@ -4,6 +4,10 @@ SDShare test suite
 
 This project provides a test suite for SDShare implementations.
 
-Information about SDShare provides <http://www.egovpt.org/fg/CWA_Part_1b>.
+Information about SDShare provides http://www.egovpt.org/fg/CWA_Part_1b.
 
-
+----------------------
+Running the test suite
+----------------------
+The system property "org.isotopicmaps.sdshare.serveraddress" must 
+be set to an IRI where the SDShare server runs (i.e. http://localhost:8888/).

@@ -11,12 +11,14 @@ group = 'org.isotopicmaps.sdshare'
 version = '0.1.0'
 bundleVersion = version
 
-project.projectName = 'SDShare Server Tests'
-project.projectDescription = project.projectName // TODO
-project.vendorName = 'Semagia'
-project.vendorURL = 'http://www.semagia.com/'
-project.licenseName = 'Apache Software License, Version 2.0'
-project.licenseURL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+projectName = 'SDShare Server Tests'
+projectDescription = project.projectName // TODO
+projectURL = 'http://github.com/heuer/sdshare-tests'
+
+vendorName = 'Semagia'
+vendorURL = 'http://www.semagia.com/'
+licenseName = 'Apache Software License, Version 2.0'
+licenseURL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 
 apply plugin: 'java'
 apply plugin: 'osgi'
@@ -35,18 +37,58 @@ gradle.taskGraph.whenReady {taskGraph ->
    }
 }
 
+REP_SEMAGIA = 'http://repository.semagia.com/releases/'
+REP_TMAPI = 'http://www.tmapi.org/maven-repository/'
+
 repositories {
     mavenCentral()
-    mavenRepo urls: 'http://www.tmapi.org/maven-repository/'
-    mavenRepo urls: 'http://repository.semagia.com/releases/'
+    mavenRepo urls: REP_TMAPI
+    mavenRepo urls: REP_SEMAGIA
 }
 
 dependencies {
     compile 'junit:junit:4.8.1', 
             'xom:xom:1.2.5', 
-            'org.tmapi:tmapi:[2.0.2,)',
-            'org.tmapix:tmapix-io:1.0.0',
+//            'org.tmapi:tmapi:[2.0.2,)',
+//            'org.tmapix:tmapix-io:1.0.0',
             'org.slf4j:slf4j-api:(1.5.8,)'
     testRuntime 'org.slf4j:slf4j-jdk14:(1.5.8,)'
+}
+
+artifacts {
+    archives jar
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "file://$buildDir/maven-repo/")
+
+        pom.project {
+            name project.projectName
+            description project.projectDescription
+            url project.projectURL
+            
+            organization {
+                name project.vendorName
+                url project.vendorURL
+            }
+            licenses {
+               license {
+                  name project.licenseName
+                  url project.licenseURL
+               }
+            }
+            repositories {
+               repository {
+                  id 'tmapi'
+                  url REP_TMAPI
+               }
+               repository {
+                  id 'semagia-releases'
+                  url REP_SEMAGIA
+               }
+            }
+        }
+    }
 }
 
