@@ -20,11 +20,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
-import junit.framework.TestCase;
-
 import org.isotopicmaps.sdsharetests.IConstants;
 import org.isotopicmaps.sdsharetests.MediaType;
-import org.junit.Before;
+
+import static org.junit.Assert.*;
 
 import nu.xom.Document;
 import nu.xom.Node;
@@ -36,17 +35,9 @@ import nu.xom.Nodes;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  * @version $Rev:$ - $Date:$
  */
-public class AbstractServerTestCase extends TestCase implements IConstants{
+public class AbstractServerTestCase implements IConstants{
 
     private static final String _UNKNOWN_MEDIA_TYPE = "application/x-hello-iam+unknown";
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        if (Utils.getServerAddress() == null) {
-            fail("The server address was not found. Undefined system property '" + SERVER_ADDRESS_PROPERTY + "'");
-        }
-    }
 
     /**
      * Helper method to fetch an Atom feed.

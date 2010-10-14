@@ -25,6 +25,8 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
 
+import static org.junit.Assert.*;
+
 /**
  * Tests against the 
  * <a href="http://www.egovpt.org/fg/CWA_Part_1b#head-2d2f6ded1149ce9e0c3ae9b030fd7de1de49f810">overview feed</a>.

@@ -52,7 +52,11 @@ final class Utils implements IConstants {
     }
 
     public static URI getServerAddress() {
-        return URI.create(System.getProperty(SERVER_ADDRESS_PROPERTY));
+        final String addr = System.getProperty(SERVER_ADDRESS_PROPERTY);
+        if (addr == null) {
+            throw new IllegalStateException("The system property '" + SERVER_ADDRESS_PROPERTY + "' is not set");
+        }
+        return URI.create(addr);
     }
 
     public static XPathContext getDefaultXPathContext() {
