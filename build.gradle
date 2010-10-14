@@ -12,7 +12,7 @@ version = '0.1.0'
 bundleVersion = version
 
 projectName = 'SDShare Server Tests'
-projectDescription = project.projectName // TODO
+projectDescription = projectName // TODO
 projectURL = 'http://github.com/heuer/sdshare-tests'
 
 vendorName = 'Semagia'
