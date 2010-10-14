@@ -11,3 +11,7 @@ Running the test suite
 ----------------------
 The system property "org.isotopicmaps.sdshare.serveraddress" must 
 be set to an IRI where the SDShare server runs (i.e. http://localhost:8888/).
+
+Example:
+
+    java -Dorg.isotopicmaps.sdshare.serveraddress=http://localhost:8888 -jar sdshare-tests-0.1.0-SNAPSHOT.jar

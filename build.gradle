@@ -21,7 +21,6 @@ licenseName = 'Apache Software License, Version 2.0'
 licenseURL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 
 apply plugin: 'java'
-apply plugin: 'osgi'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
 
@@ -55,8 +54,51 @@ dependencies {
     testRuntime 'org.slf4j:slf4j-jdk14:(1.5.8,)'
 }
 
+jar {
+      manifest {
+        name = projectName
+        
+        attributes 'Implementation-Version': project.version, 
+                    'Implementation-Vendor': project.vendorName, 
+                    'Implementation-URL': project.projectURL, 
+                    'Sealed': 'false',
+                    'Main-Class': 'org.isotopicmaps.sdsharetests.server.RunServerTests',
+                    'Class-Path': configurations.runtime.plus(configurations.testRuntime).collect({ 'lib/' + it.name}).join(' ')
+      }
+}
+
 artifacts {
     archives jar
+}
+
+task dist(dependsOn: [assemble, test]) << {
+    def base_name = "$archivesBaseName-${project.version}"
+    def base = "$distsDir/" + base_name
+    def zips = "$buildDir/dist/$base_name"
+    def doc_dir = "$buildDir/docs"
+    copy {
+        into base
+        from(doc_dir)
+        from(libsDir)
+        from(projectDir) {
+            include 'README'
+            include 'LICENSE.txt'
+            include 'CHANGES.txt'
+            include 'NOTICE.txt'
+        }
+        from("$projectDir/src") {
+            into 'src'
+            exclude '**/*.bak'
+        }
+        into('lib') {
+            from configurations.runtime
+            from configurations.testRuntime
+        }
+    }
+    ant {
+        tar destfile: zips + '.tar.gz', basedir: distsDir, compression: 'gzip', longfile: 'gnu'
+        zip destfile: zips + '.zip', basedir: distsDir
+    }
 }
 
 uploadArchives {
