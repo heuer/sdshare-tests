@@ -17,6 +17,7 @@ package org.isotopicmaps.sdsharetests.server;
 
 import java.net.URI;
 
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,7 @@ public class TestOverviewFeed extends AbstractServerTestCase {
      *
      * @throws Exception In case of an error.
      */
+    @Test
     public void testOverviewFeed() throws Exception {
         final Document doc = super.fetchOverviewFeed();
         // Fetch all links which point to a collection.
