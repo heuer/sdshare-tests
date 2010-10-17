@@ -68,9 +68,9 @@ public class TestSnapshotsFeed extends AbstractServerTestCase {
     @Test
     public void testSnapshotsFeed() throws Exception {
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
-        final Nodes links = query(feed, "atom:entry/atom:link[@rel='" + REL_ALTERNATE + "']");
+        final Nodes links = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + REL_ALTERNATE + "']");
         if (links.size() == 0) {
-            LOG.info("No snapshots found");
+            LOG.info("No snapshots found in " + feed.getBaseURI());
         }
         for (int i=0; i<links.size(); i++) {
             Element link = (Element) links.get(i);

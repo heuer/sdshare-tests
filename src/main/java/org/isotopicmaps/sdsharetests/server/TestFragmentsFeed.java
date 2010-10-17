@@ -72,12 +72,12 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
         assertEquals(1, srcLocPrefixNodes.size());
         final Element srcLocPrefix = (Element) srcLocPrefixNodes.get(0);
         assertFalse("The ServerSrcLocatorPrefix must not be empty", srcLocPrefix.getValue().isEmpty());
-        final Nodes entries = query(feed, "atom:entry[sd:TopicSI]");
+        final Nodes entries = query(feed, "atom:feed/atom:entry[sd:TopicSI]");
         if (entries.size() == 0) {
             LOG.info("No fragment entries found in " + feed.getBaseURI());
             return;
         }
-        final Nodes links = query(feed, "atom:entry[sd:TopicSI]/atom:link[@rel='" + REL_ALTERNATE + "']");
+        final Nodes links = query(feed, "atom:feed/atom:entry[sd:TopicSI]/atom:link[@rel='" + REL_ALTERNATE + "']");
         if (links.size() == 0) {
             fail(feed.getBaseURI() + " provides no links to fragments");
         }
