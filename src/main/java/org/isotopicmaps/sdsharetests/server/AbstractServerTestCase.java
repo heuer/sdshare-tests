@@ -20,6 +20,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.isotopicmaps.sdsharetests.IConstants;
 import org.isotopicmaps.sdsharetests.MediaType;
 
@@ -79,10 +82,11 @@ abstract class AbstractServerTestCase implements IConstants{
     /**
      * Does some basic tests (i.e. if the atom:id is provided etc.) to validate
      * an Atom 1.0 feed.
+     * @throws Exception 
      *
      * @doc The feed document
      */
-    protected void testAtomFeedValidity(final Document doc) {
+    protected void testAtomFeedValidity(final Document doc) throws Exception {
         Nodes nodes = query(doc, "atom:feed");
         assertEquals("Expected exactly one atom:feed element", 1, nodes.size());
         final Node feed = nodes.get(0);
@@ -122,7 +126,7 @@ abstract class AbstractServerTestCase implements IConstants{
         }
     }
 
-    protected void validateEntryCommons(final Node node) {
+    protected void validateEntryCommons(final Node node) throws Exception {
         Nodes nodes = query(node, "atom:id");
         assertEquals("No atom:id found", 1, nodes.size());
         final Node id = nodes.get(0);
@@ -133,8 +137,9 @@ abstract class AbstractServerTestCase implements IConstants{
         assertFalse("atom:title should not be empty", title.getValue().isEmpty());
         nodes = query(node, "atom:updated");
         assertEquals("No atom:updated found", 1, nodes.size());
-        final Node updated = nodes.get(0);
-        assertFalse("atom:updated must not be empty", updated.getValue().isEmpty());
+        final String updated = nodes.get(0).getValue();
+        final XMLGregorianCalendar dateTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(updated);
+        assertEquals(dateTime.toXMLFormat(), updated);
     }
 
     /**
