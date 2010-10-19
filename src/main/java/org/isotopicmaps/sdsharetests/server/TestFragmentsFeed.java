@@ -69,7 +69,7 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
     public void testFragmentFeed() throws Exception {
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
         final Nodes srcLocPrefixNodes = query(feed, "atom:feed/sd:ServerSrcLocatorPrefix");
-        assertEquals(1, srcLocPrefixNodes.size());
+        assertEquals("Expected one sd:ServerSrcLocatorPrefix", 1, srcLocPrefixNodes.size());
         final Element srcLocPrefix = (Element) srcLocPrefixNodes.get(0);
         assertFalse("The ServerSrcLocatorPrefix must not be empty", srcLocPrefix.getValue().isEmpty());
         final Nodes entries = query(feed, "atom:feed/atom:entry[sd:TopicSI]");

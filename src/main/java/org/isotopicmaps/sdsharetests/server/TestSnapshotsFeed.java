@@ -68,6 +68,10 @@ public class TestSnapshotsFeed extends AbstractServerTestCase {
     @Test
     public void testSnapshotsFeed() throws Exception {
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
+        final Nodes srcLocPrefixNodes = query(feed, "atom:feed/sd:ServerSrcLocatorPrefix");
+        assertEquals("Expected one sd:ServerSrcLocatorPrefix", 1, srcLocPrefixNodes.size());
+        final Element srcLocPrefix = (Element) srcLocPrefixNodes.get(0);
+        assertFalse("The ServerSrcLocatorPrefix must not be empty", srcLocPrefix.getValue().isEmpty());
         final Nodes links = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + REL_ALTERNATE + "']");
         if (links.size() == 0) {
             LOG.info("No snapshots found in " + feed.getBaseURI());
