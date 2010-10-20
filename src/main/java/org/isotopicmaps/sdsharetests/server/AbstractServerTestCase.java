@@ -117,7 +117,7 @@ abstract class AbstractServerTestCase implements IConstants{
                             authors.size() > 0);
             }
             for (int j=0; j<authors.size(); j++) {
-                validateAuthor(authors.get(i));
+                validateAuthor(authors.get(j));
             }
             // Each entry must have a link rel="alternate" iff it has no content
             if (query(entry, "atom:content").size() == 0) {
@@ -149,10 +149,10 @@ abstract class AbstractServerTestCase implements IConstants{
      * @author The author to validate.
      */
     protected final void validateAuthor(final Node author) {
-        assertNotNull(author);
+        assertNotNull("Internal test error, got an author node which is null", author);
         // atom:name is required
         Nodes nodes = query(author, "atom:name");
-        assertEquals(1, nodes.size());
+        assertEquals("atom:author must have 1 atom:name child", 1, nodes.size());
         assertFalse("atom:name should not be empty", nodes.get(0).getValue().isEmpty());
         // atom:email is optional
         nodes = query(author, "atom:email");
