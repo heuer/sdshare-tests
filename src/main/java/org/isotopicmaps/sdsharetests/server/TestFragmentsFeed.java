@@ -89,7 +89,8 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
             attr = link.getAttribute("type");
             // TODO: Assume that the media type is required,
             // see <http://projects.topicmapslab.de/issues/3691>
-            assertNotNull(link);
+            assertNotNull("Expected a type attribute", attr);
+            assertFalse("Expected a non-empty type attribute", attr.getValue().isEmpty());
             super.testURIRetrieval(href, attr.getValue());
             super.testWithUnknownMediaType(href);
         }

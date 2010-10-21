@@ -53,8 +53,8 @@ abstract class AbstractServerTestCase implements IConstants{
      */
     protected InputStream fetchAtomFeed(final URI uri) throws IOException {
         final HttpURLConnection conn = Utils.connect(uri, MEDIA_TYPE_ATOM_XML);
-        assertEquals(HttpURLConnection.HTTP_OK, conn.getResponseCode());
-        assertTrue(MediaType.ATOM_XML.isCompatible(MediaType.valueOf(conn.getContentType())));
+        assertEquals("Expected a status code 200 for " + uri.toString(), HttpURLConnection.HTTP_OK, conn.getResponseCode());
+        assertTrue("Expected media type application/atom+xml for " + uri.toString(), MediaType.ATOM_XML.isCompatible(MediaType.valueOf(conn.getContentType())));
         return conn.getInputStream();
     }
 
@@ -140,7 +140,7 @@ abstract class AbstractServerTestCase implements IConstants{
         assertEquals("No atom:updated found", 1, nodes.size());
         final String updated = nodes.get(0).getValue();
         final XMLGregorianCalendar dateTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(updated);
-        assertEquals(dateTime.toXMLFormat(), updated);
+        assertEquals("Unexpected atom:updated value", dateTime.toXMLFormat(), updated);
     }
 
     /**
@@ -206,8 +206,8 @@ abstract class AbstractServerTestCase implements IConstants{
         final HttpURLConnection conn = Utils.connect(uri, mediaType);
         final MediaType requestMediaType = MediaType.valueOf(mediaType);
         final MediaType responseMediaType = MediaType.valueOf(conn.getContentType());
-        assertEquals(HttpURLConnection.HTTP_OK, conn.getResponseCode());
-        assertTrue(requestMediaType.isCompatible(responseMediaType));
+        assertEquals("Expected a status code 200 for " + uri.toString(), HttpURLConnection.HTTP_OK, conn.getResponseCode());
+        assertTrue("Expected a compatible media type to " + mediaType + ", got " + responseMediaType.toString(), requestMediaType.isCompatible(responseMediaType));
     }
 
 }
