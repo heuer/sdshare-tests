@@ -102,16 +102,16 @@ public interface IConstants {
     /**
      * Attribute value for the link type "collectionfeed"
      */
-    public static final String REL_COLLECTION_FEED = NS_SDSHARE + "collectionfeed";
+    public static final String REL_COLLECTION_FEED = NS_SDSHARE + "/collectionfeed";
 
     /**
      * Attribute value for the link type "fragmentsfeed"
      */
-    public static final String REL_FRAGMENTS_FEED = NS_SDSHARE + "fragmentsfeed";
+    public static final String REL_FRAGMENTS_FEED = NS_SDSHARE + "/fragmentsfeed";
 
     /**
      * Attribute value for the link type "snapshotsfeed"
      */
-    public static final String REL_SNAPSHOTS_FEED = NS_SDSHARE + "snapshotsfeed";
+    public static final String REL_SNAPSHOTS_FEED = NS_SDSHARE + "/snapshotsfeed";
 
 }
