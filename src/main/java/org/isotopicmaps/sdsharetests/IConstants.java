@@ -36,7 +36,7 @@ public interface IConstants {
     /**
      * SDShare namespace.
      */
-    public final static String NS_SDSHARE = "http://www.egovpt.org/sdshare/";
+    public final static String NS_SDSHARE = "http://www.egovpt.org/sdshare";
 
     /**
      * Media type application/atom+xml
