@@ -1,0 +1,47 @@
+<project name="sdshare-tests" default="jar" basedir="."
+         xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <!-- Initialize properties -->
+  <target name="init">
+    <property name="build.compiler" value="modern" />
+    <property name="build.root" value="${basedir}/build" />
+    <property name="build.classes" value="${build.root}/classes" />
+
+    <ivy:settings id="ivy.instance" file="${basedir}/ivysettings.xml" />
+    <ivy:resolve />
+    <ivy:retrieve organisation="org.isotopicmaps" module="sdshare-tests"
+                  conf="build" />
+    <ivy:cachepath pathid="project.classpath.ivy"
+                   organisation="org.isotopicmaps"
+                   module="sdshare-tests" conf="build" />
+  </target>
+
+  <!-- Patterns -->
+  <patternset id="sources">
+    <include name="src/main/java/**/*.java" />
+  </patternset>
+
+  <patternset id="classes">
+    <include name="**/*.class" />
+  </patternset>
+
+  <!-- Compile -->  
+  <target name="compile" depends="init">
+    <mkdir dir="${build.classes}"/>
+    <javac srcdir="${basedir}" destdir="${build.classes}"
+           debug="yes" debuglevel="source,lines,vars"
+           classpathref="project.classpath.ivy">
+      <patternset refid="sources" />
+    </javac>
+  </target>
+
+  <!-- Make .jar file -->
+  <target name="jar" depends="compile">
+    <echo>Creating sdshare-tests.jar file...</echo>
+    <delete file="${build.root}/sdshare-tests.jar" />
+    <jar basedir="${build.classes}" jarfile="${build.jars}/sdshare-tests.jar">
+      <patternset refid="classes"/>
+    </jar>
+  </target>
+  
+</project>
