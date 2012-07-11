@@ -1,0 +1,4 @@
+Class-Path: junit-4.8.1.jar slf4j-api-1.5.8.jar xalan-2.7.0.jar xercesImpl-2.8.0.jar xml-apis-1.3.03.jar xom-1.2.5.jar slf4j-simple-1.5.8.jar 
+Main-Class: org.isotopicmaps.sdsharetests.server.RunServerTests
+Sealed: false
+  

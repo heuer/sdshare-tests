@@ -36,7 +36,7 @@ public interface IConstants {
     /**
      * SDShare namespace.
      */
-    public final static String NS_SDSHARE = "http://www.egovpt.org/sdshare";
+    public final static String NS_SDSHARE = "http://www.sdshare.org/2012/core/";
 
     /**
      * Media type application/atom+xml
@@ -76,7 +76,7 @@ public interface IConstants {
     /**
      * Element name which contains the subject identifier in a TMShare Atom feed.
      */
-    public final static String ELEMENT_SID = "TopicSI";
+    public final static String ELEMENT_SID = "resource";
 
     /**
      * Element name which contains the server source locator prefix in a 
@@ -102,16 +102,21 @@ public interface IConstants {
     /**
      * Attribute value for the link type "collectionfeed"
      */
-    public static final String REL_COLLECTION_FEED = NS_SDSHARE + "/collectionfeed";
+    public static final String REL_COLLECTION_FEED = NS_SDSHARE + "collectionfeed";
 
     /**
      * Attribute value for the link type "fragmentsfeed"
      */
-    public static final String REL_FRAGMENTS_FEED = NS_SDSHARE + "/fragmentsfeed";
+    public static final String REL_FRAGMENTS_FEED = NS_SDSHARE + "fragmentsfeed";
 
     /**
      * Attribute value for the link type "snapshotsfeed"
      */
-    public static final String REL_SNAPSHOTS_FEED = NS_SDSHARE + "/snapshotsfeed";
+    public static final String REL_SNAPSHOTS_FEED = NS_SDSHARE + "snapshotsfeed";
 
+    /**
+     * Attribute value for the link type "fragment"
+     */
+    public static final String REL_FRAGMENT = NS_SDSHARE + "fragment";
+  
 }

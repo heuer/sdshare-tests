@@ -33,6 +33,8 @@ import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.isotopicmaps.sdsharetests.MediaType;
+
 /**
  * Tests against the 
  * <a href="http://www.egovpt.org/fg/CWA_Part_1b#head-c41ad0664f1b6fb60343d7369e78ad90ea9b1bc3">fragments feed</a>.
@@ -67,20 +69,29 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
 
     @Test
     public void testFragmentFeed() throws Exception {
+        check(_uri);
+    }
+
+    // we use this submethod so we can recurse along 'next' links
+    private void check(URI uri) throws Exception {
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
-        final Nodes srcLocPrefixNodes = query(feed, "atom:feed/sd:ServerSrcLocatorPrefix");
-        assertEquals("Expected one sd:ServerSrcLocatorPrefix", 1, srcLocPrefixNodes.size());
-        final Element srcLocPrefix = (Element) srcLocPrefixNodes.get(0);
-        assertFalse("The ServerSrcLocatorPrefix must not be empty", srcLocPrefix.getValue().isEmpty());
-        final Nodes entries = query(feed, "atom:feed/atom:entry[sd:TopicSI]");
+        final Nodes entries = query(feed, "atom:feed/atom:entry[sd:resource]");
         if (entries.size() == 0) {
-            LOG.info("No fragment entries found in " + feed.getBaseURI());
+            LOG.warn("No fragment entries found in " + feed.getBaseURI());
             return;
         }
-        final Nodes links = query(feed, "atom:feed/atom:entry[sd:TopicSI]/atom:link[@rel='" + REL_ALTERNATE + "']");
+        Nodes links = query(feed, "atom:feed/atom:entry[sd:resource]/atom:link[@rel='" + REL_ALTERNATE + "']");
+        int alternates = links.size();
+        if (alternates == 0) {
+            fail(feed.getBaseURI() + " provides no 'alternate' links to fragments");
+        }
+        links = query(feed, "atom:feed/atom:entry[sd:resource]/atom:link[@rel='" + REL_FRAGMENT + "']");
         if (links.size() == 0) {
             fail(feed.getBaseURI() + " provides no links to fragments");
         }
+        assertEquals(feed.getBaseURI() + " doesn't have the same number of 'alternate' and 'fragment' links",
+                    alternates, links.size());
+
         for (int i=0; i<links.size(); i++) {
             Element link = (Element) links.get(i);
             Attribute attr = link.getAttribute("href");
@@ -94,5 +105,22 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
             super.testURIRetrieval(href, attr.getValue());
             super.testWithUnknownMediaType(href);
         }
+
+        Nodes next = query(feed, "atom:feed/atom:link[rel='next']");
+        assertFalse("Expected zero or one 'next' links in " + feed.getBaseURI(),
+                    next.size() > 1);
+        if (next.size() == 0)
+          return;
+        Attribute attr = ((Element) next.get(0)).getAttribute("href");
+        assertNotNull("No href attribute on 'next' link", attr);
+
+        attr = ((Element) next.get(0)).getAttribute("type");
+        MediaType type = MediaType.valueOf(attr.getValue());
+        assertTrue("Expected media type on 'next' link to be compatible with " +
+                   MEDIA_TYPE_ATOM_XML,
+                   MediaType.ATOM_XML.isCompatible(type));
+        
+        URI href = URI.create(feed.getBaseURI()).resolve(attr.getValue());
+        check(href);
     }
 }
