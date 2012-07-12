@@ -47,14 +47,28 @@ public class TestOverviewFeed extends AbstractServerTestCase {
     @Test
     public void testOverviewFeed() throws Exception {
         final Document doc = super.fetchOverviewFeed();
-        // Fetch all links which point to a collection.
-        final Nodes links = query(doc, "atom:feed/atom:entry/atom:link[@rel='" + REL_COLLECTION_FEED + "']");
-        if (links.size() == 0) {
-            LOG.info("No collection feeds found in " + doc.getBaseURI());
+        // Fetch all entries
+        final Nodes entries = query(doc, "atom:feed/atom:entry");
+        if (entries.size() == 0) {
+            LOG.warn("No collection feeds found in " + doc.getBaseURI());
         }
-        for (int i=0; i<links.size(); i++) {
-            Element link = (Element) links.get(i);
-            Attribute attr = link.getAttribute("href");
+
+        for (int i = 0; i < entries.size(); i++) {
+            Element entry = (Element) entries.get(i);
+
+            // first verify that there is an 'alternate' link
+            Nodes links = query(entry, "atom:link[@rel='alternate']");
+            assertEquals("Expected 1 'alternate' link in Atom entry",
+                         1, links.size());
+            Attribute attr = ((Element) links.get(0)).getAttribute("href");
+            assertNotNull("No 'href' attribute on 'alternate' link", attr);
+
+            // now check the "real" link
+            links = query(entry, "atom:link[@rel='" + REL_COLLECTION_FEED + "']");
+            assertEquals("Expected 1 '" + REL_COLLECTION_FEED + "' link in Atom entry",
+                         1, links.size());
+            Element link = (Element) links.get(0);
+            attr = link.getAttribute("href");
             assertNotNull("No href attribute available", attr);
             final URI href = URI.create(doc.getBaseURI()).resolve(attr.getValue());
             attr = link.getAttribute("type");

@@ -8,7 +8,7 @@
  *
  */
 group = 'org.isotopicmaps.sdshare'
-version = '0.1.2'
+version = '0.2.0'
 bundleVersion = version
 
 projectName = 'SDShare Server Tests'
@@ -48,8 +48,6 @@ repositories {
 dependencies {
     compile 'junit:junit:4.8.1', 
             'xom:xom:1.2.5', 
-//            'org.tmapi:tmapi:[2.0.2,)',
-//            'org.tmapix:tmapix-io:1.0.0',
             'org.slf4j:slf4j-api:(1.5.8,)'
     testRuntime 'org.slf4j:slf4j-jdk14:(1.5.8,)'
 }
