@@ -26,6 +26,11 @@
     <include name="**/*.class" />
   </patternset>
 
+  <!-- Clean -->  
+  <target name="clean" depends="init">
+    <delete dir="${build.root}"/>
+  </target>
+  
   <!-- Compile -->  
   <target name="compile" depends="init">
     <mkdir dir="${build.classes}"/>
