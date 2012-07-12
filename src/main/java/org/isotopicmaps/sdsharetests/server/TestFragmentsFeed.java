@@ -74,8 +74,8 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
 
     // we use this submethod so we can recurse along 'next' links
     private void check(URI uri) throws Exception {
-        validate(_uri);
-        final Document feed = super.fetchAtomFeedAsDOM(_uri);
+        validate(uri);
+        final Document feed = super.fetchAtomFeedAsDOM(uri);
         final Nodes entries = query(feed, "atom:feed/atom:entry[sd:resource]");
         if (entries.size() == 0) {
             LOG.warn("No fragment entries found in " + feed.getBaseURI());
@@ -107,20 +107,24 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
             super.testWithUnknownMediaType(href);
         }
 
-        Nodes next = query(feed, "atom:feed/atom:link[rel='next']");
+        // checking for paging
+        Nodes nexts = query(feed, "atom:feed/atom:link[@rel='next']");
         assertFalse("Expected zero or one 'next' links in " + feed.getBaseURI(),
-                    next.size() > 1);
-        if (next.size() == 0)
+                    nexts.size() > 1);
+        if (nexts.size() == 0)
           return;
-        Attribute attr = ((Element) next.get(0)).getAttribute("href");
-        assertNotNull("No href attribute on 'next' link", attr);
 
-        attr = ((Element) next.get(0)).getAttribute("type");
-        MediaType type = MediaType.valueOf(attr.getValue());
-        assertTrue("Expected media type on 'next' link to be compatible with " +
-                   MEDIA_TYPE_ATOM_XML,
-                   MediaType.ATOM_XML.isCompatible(type));
-        
+        Element next = (Element) nexts.get(0);
+        Attribute attr = next.getAttribute("type");
+        if (attr != null) {
+          MediaType type = MediaType.valueOf(attr.getValue());
+          assertTrue("Expected media type on 'next' link to be compatible with " +
+                     MEDIA_TYPE_ATOM_XML,
+                     MediaType.ATOM_XML.isCompatible(type));
+        }
+
+        attr = next.getAttribute("href");
+        assertNotNull("No href attribute on 'next' link", attr);
         URI href = URI.create(feed.getBaseURI()).resolve(attr.getValue());
         check(href);
     }

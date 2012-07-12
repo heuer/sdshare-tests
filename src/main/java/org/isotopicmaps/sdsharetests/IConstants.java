@@ -110,6 +110,11 @@ public interface IConstants {
     public static final String REL_FRAGMENTS_FEED = NS_SDSHARE + "fragmentsfeed";
 
     /**
+     * Attribute value for the link type "snapshot"
+     */
+    public static final String REL_SNAPSHOT = NS_SDSHARE + "snapshot";
+  
+    /**
      * Attribute value for the link type "snapshotsfeed"
      */
     public static final String REL_SNAPSHOTS_FEED = NS_SDSHARE + "snapshotsfeed";
