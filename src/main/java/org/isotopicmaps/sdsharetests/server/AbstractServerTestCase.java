@@ -20,6 +20,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -31,6 +34,8 @@ import static org.junit.Assert.*;
 import nu.xom.Document;
 import nu.xom.Node;
 import nu.xom.Nodes;
+
+import com.thaiopensource.validate.ValidationDriver;
 
 /**
  * Abstract test case which provides some useful utility methods.
@@ -210,4 +215,20 @@ abstract class AbstractServerTestCase implements IConstants{
         assertTrue("Expected a compatible media type to " + mediaType + ", got " + responseMediaType.toString(), requestMediaType.isCompatible(responseMediaType));
     }
 
+    /**
+     * Validates the document at the given URI against the Atom schema.
+     */
+    protected void validate(URI uri) throws IOException, SAXException {
+        ValidationDriver driver = new ValidationDriver();
+
+        // first, locate and load the schema
+        ClassLoader cloader = Thread.currentThread().getContextClassLoader();
+        InputStream istream = cloader.getResourceAsStream("atom.rng");
+        assertNotNull("Couldn't load Atom schema", istream);
+        driver.loadSchema(new InputSource(istream));
+
+        // second, go go go!
+        assertTrue("Document " + uri + " failed to validate; see stdout",
+                   driver.validate(new InputSource(uri.toString())));
+    }
 }

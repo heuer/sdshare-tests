@@ -26,6 +26,10 @@
     <include name="**/*.class" />
   </patternset>
 
+  <patternset id="resources">
+    <include name="**/*.rng" />
+  </patternset>
+  
   <!-- Clean -->  
   <target name="clean" depends="init">
     <delete dir="${build.root}"/>
@@ -45,9 +49,11 @@
   <target name="jar" depends="compile">
     <echo>Creating sdshare-tests.jar file...</echo>
     <delete file="${build.jars}/sdshare-tests.jar" />
+    <copy file="src/main/resources/atom.rng" todir="build/classes"/>
     <jar basedir="${build.classes}" jarfile="${build.jars}/sdshare-tests.jar"
          manifest="manifest.mf">
       <patternset refid="classes"/>
+      <patternset refid="resources"/>
     </jar>
   </target>
   

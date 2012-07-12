@@ -9,5 +9,6 @@
     <dependency org="xom" name="xom" rev="1.2.5" conf="build" />
     <dependency org="org.slf4j" name="slf4j-api" rev="1.5.8" conf="build" />
     <dependency org="org.slf4j" name="slf4j-simple" rev="1.5.8" conf="build" />
+    <dependency org="thaiopensource" name="jing" rev="20030619"/>
   </dependencies>
 </ivy-module>

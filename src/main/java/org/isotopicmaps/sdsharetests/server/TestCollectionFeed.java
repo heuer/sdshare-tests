@@ -68,6 +68,8 @@ public class TestCollectionFeed extends AbstractServerTestCase {
      */
     @Test
     public void testCollectionFeed() throws Exception {
+        validate(_uri);
+      
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
         // Fetch all links which point to a collection.
         final Nodes fragmentFeedLinks = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + REL_FRAGMENTS_FEED + "'][not(@type) or @type='application/atom+xml']");

@@ -67,6 +67,7 @@ public class TestSnapshotsFeed extends AbstractServerTestCase {
 
     @Test
     public void testSnapshotsFeed() throws Exception {
+        validate(_uri);
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
         // FIXME: don't like this test.
         final Nodes links = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + REL_ALTERNATE + "']");

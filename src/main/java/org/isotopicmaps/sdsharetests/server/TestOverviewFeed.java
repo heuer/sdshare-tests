@@ -46,6 +46,8 @@ public class TestOverviewFeed extends AbstractServerTestCase {
      */
     @Test
     public void testOverviewFeed() throws Exception {
+        validate(Utils.getServerAddress());
+      
         final Document doc = super.fetchOverviewFeed();
         // Fetch all entries
         final Nodes entries = query(doc, "atom:feed/atom:entry");

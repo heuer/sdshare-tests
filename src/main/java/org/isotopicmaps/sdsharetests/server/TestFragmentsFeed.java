@@ -74,6 +74,7 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
 
     // we use this submethod so we can recurse along 'next' links
     private void check(URI uri) throws Exception {
+        validate(_uri);
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
         final Nodes entries = query(feed, "atom:feed/atom:entry[sd:resource]");
         if (entries.size() == 0) {
