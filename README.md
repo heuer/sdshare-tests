@@ -14,3 +14,15 @@ be set to an IRI where the SDShare server runs (i.e. http://localhost:8888/).
 Example:
 
     java -Dorg.sdshare.serveraddress=http://localhost:8888 -jar sdshare-tests.jar
+
+
+Disable picky server tests
+--------------------------
+
+To disable picky tests (enabled by default), set the system property 
+`org.sdshare.pickyservertests` to `false`.
+
+Example:
+
+    java -Dorg.sdshare.serveraddress=http://localhost:8888 -Dorg.sdshare.pickyservertests=false -jar sdshare-tests.jar
+
