@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 - 2009 Lars Heuer (heuer[at]semagia.com). All rights reserved.
+ * Copyright 2010 - 2012 SDShare.org. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.isotopicmaps.sdsharetests;
+package org.sdshare.sdsharetests;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,9 +21,6 @@ import java.util.List;
 
 /**
  * Represents an immutable media type.
- * 
- * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
- * @version $Rev: 66 $ - $Date: 2010-09-06 17:29:07 +0200 (Mo, 06 Sep 2010) $
  */
 public final class MediaType {
 

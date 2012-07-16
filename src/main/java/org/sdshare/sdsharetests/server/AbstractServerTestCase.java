@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Lars Heuer (heuer[at]semagia.com). All rights reserved.
+ * Copyright 2010 - 2012 SDShare.org. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.isotopicmaps.sdsharetests.server;
+package org.sdshare.sdsharetests.server;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
+import org.sdshare.sdsharetests.IConstants;
+import org.sdshare.sdsharetests.MediaType;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.isotopicmaps.sdsharetests.IConstants;
-import org.isotopicmaps.sdsharetests.MediaType;
 
 import static org.junit.Assert.*;
 
@@ -39,9 +35,6 @@ import com.thaiopensource.validate.ValidationDriver;
 
 /**
  * Abstract test case which provides some useful utility methods.
- * 
- * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
- * @version $Rev:$ - $Date:$
  */
 abstract class AbstractServerTestCase implements IConstants{
 
@@ -86,94 +79,6 @@ abstract class AbstractServerTestCase implements IConstants{
     }
 
     /**
-     * Does some basic tests (i.e. if the atom:id is provided etc.) to validate
-     * an Atom 1.0 feed.
-     * @throws Exception 
-     *
-     * @doc The feed document
-     */
-    protected void testAtomFeedValidity(final Document doc) throws Exception {
-        Nodes nodes = query(doc, "atom:feed");
-        assertEquals("Expected exactly one atom:feed element", 1, nodes.size());
-        final Node feed = nodes.get(0);
-        validateEntryCommons(feed);
-        // If the feed has no author, all entries must have an author
-        nodes = query(feed, "atom:author");
-        boolean feedAuthorProvided = false;
-        if (nodes.size() > 0) {
-            feedAuthorProvided = true;
-            for (int i=0; i<nodes.size(); i++) {
-                validateAuthor(nodes.get(i));
-            }
-        }
-        // Check each atom:entry for validity
-        final Nodes entries = query(feed, "atom:entry");
-        if (entries.size() == 0) {
-            //TODO: Is this true?
-            assertTrue("The feed has no entries, therefor the atom:feed must have an atom:author", feedAuthorProvided);
-        }
-        for (int i=0; i<entries.size(); i++) {
-            Node entry = entries.get(i);
-            validateEntryCommons(entry);
-            final Nodes authors = query(entry, "atom:author");
-            if (!feedAuthorProvided) {
-                // atom:feed has no author, all atom:entry children MUST have an author.
-                assertTrue("atom:feed has no atom:author, each atom:entry must have 1..n atom:author children", 
-                            authors.size() > 0);
-            }
-            for (int j=0; j<authors.size(); j++) {
-                validateAuthor(authors.get(j));
-            }
-            // Each entry must have a link rel="alternate" iff it has no content
-            if (query(entry, "atom:content").size() == 0) {
-                assertTrue("The entry " + entry.toXML() + " has no atom:content and no atom:link[@rel='alternate'] child", 
-                        query(entry, "atom:link[@rel='alternate']").size() > 0);
-            }
-        }
-    }
-
-    protected void validateEntryCommons(final Node node) throws Exception {
-        Nodes nodes = query(node, "atom:id");
-        assertEquals("No atom:id found", 1, nodes.size());
-        final Node id = nodes.get(0);
-        assertFalse("atom:id must be an IRI", id.getValue().isEmpty());
-        nodes = query(node, "atom:title");
-        assertEquals("No atom:title found", 1, nodes.size());
-        final Node title = nodes.get(0);
-        assertFalse("atom:title should not be empty", title.getValue().isEmpty());
-        nodes = query(node, "atom:updated");
-        assertEquals("No atom:updated found", 1, nodes.size());
-        final String updated = nodes.get(0).getValue();
-        final XMLGregorianCalendar dateTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(updated);
-        assertEquals("Unexpected atom:updated value", dateTime.toXMLFormat(), updated);
-    }
-
-    /**
-     * Validates atom:author.
-     *
-     * @author The author to validate.
-     */
-    protected final void validateAuthor(final Node author) {
-        assertNotNull("Internal test error, got an author node which is null", author);
-        // atom:name is required
-        Nodes nodes = query(author, "atom:name");
-        assertEquals("atom:author must have 1 atom:name child", 1, nodes.size());
-        assertFalse("atom:name should not be empty", nodes.get(0).getValue().isEmpty());
-        // atom:email is optional
-        nodes = query(author, "atom:email");
-        if (nodes.size() != 0) {
-            assertEquals("atom:author must have 0..1 atom:email children", 1, nodes.size());
-            assertFalse("atom:email must be empty", nodes.get(0).getValue().isEmpty());
-        }
-        // atom:uri is optional
-        nodes = query(author, "atom:uri");
-        if (nodes.size() != 0) {
-            assertEquals("atom:uri must have 0..1 atom:uri children", 1, nodes.size());
-            assertFalse("atom:uri must be an IRI", nodes.get(0).getValue().isEmpty());
-        }
-    }
-
-    /**
      * Returns the overview feed.
      *
      * The feed is validated.
@@ -196,7 +101,7 @@ abstract class AbstractServerTestCase implements IConstants{
      */
     protected Document fetchAtomFeedAsDOM(final URI uri) throws Exception {
         final Document doc = Utils.makeDocument(fetchAtomFeed(uri), uri);
-        testAtomFeedValidity(doc);
+        validate(uri);
         return doc;
     }
 

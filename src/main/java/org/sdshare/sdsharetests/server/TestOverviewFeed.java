@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Lars Heuer (heuer[at]semagia.com). All rights reserved.
+ * Copyright 2010 - 2012 SDShare.org. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.isotopicmaps.sdsharetests.server;
+package org.sdshare.sdsharetests.server;
 
 import java.net.URI;
 
@@ -31,9 +31,6 @@ import static org.junit.Assert.*;
 /**
  * Tests against the 
  * <a href="http://www.egovpt.org/fg/CWA_Part_1b#head-2d2f6ded1149ce9e0c3ae9b030fd7de1de49f810">overview feed</a>.
- * 
- * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
- * @version $Rev:$ - $Date:$
  */
 public class TestOverviewFeed extends AbstractServerTestCase {
 
@@ -46,8 +43,6 @@ public class TestOverviewFeed extends AbstractServerTestCase {
      */
     @Test
     public void testOverviewFeed() throws Exception {
-        validate(Utils.getServerAddress());
-      
         final Document doc = super.fetchOverviewFeed();
         // Fetch all entries
         final Nodes entries = query(doc, "atom:feed/atom:entry");
