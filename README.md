@@ -15,7 +15,6 @@ Example:
 
     java -Dorg.sdshare.serveraddress=http://localhost:8888 -jar sdshare-tests.jar
 
-
 Picky server tests
 ------------------
 
