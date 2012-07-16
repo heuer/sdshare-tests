@@ -13,4 +13,4 @@ be set to an IRI where the SDShare server runs (i.e. http://localhost:8888/).
 
 Example:
 
-    java -Dorg.isotopicmaps.sdshare.serveraddress=http://localhost:8888 -jar sdshare-tests.jar
+    java -Dorg.sdshare.serveraddress=http://localhost:8888 -jar sdshare-tests.jar
