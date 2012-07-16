@@ -34,7 +34,6 @@ import nu.xom.XPathContext;
 
 /**
  * Internal utilities.
- * 
  */
 final class Utils implements IConstants {
 
@@ -49,12 +48,28 @@ final class Utils implements IConstants {
         // noop.
     }
 
+    /**
+     * Returns the server address to run the tests against.
+     * 
+     * @return The server address.
+     * @throws IllegalStateException If the system property is null.
+     */
     public static URI getServerAddress() {
         final String addr = System.getProperty(SERVER_ADDRESS_PROPERTY);
         if (addr == null) {
             throw new IllegalStateException("The system property '" + SERVER_ADDRESS_PROPERTY + "' is not set");
         }
         return URI.create(addr);
+    }
+
+    /**
+     * Returns if picky tests should be run (returns true by default).
+     * 
+     * @return If picky tests should be run.
+     */
+    public static boolean isPickyEnabled() {
+        final String picky = System.getProperty(SERVER_PICKY_PROPERTY, "true");
+        return !"false".equalsIgnoreCase(picky);
     }
 
     public static XPathContext getDefaultXPathContext() {

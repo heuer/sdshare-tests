@@ -26,6 +26,11 @@ public interface IConstants {
     public static final String SERVER_ADDRESS_PROPERTY = "org.sdshare.serveraddress";
 
     /**
+     * Constant for the property name to enable/disable picky server tests.
+     */
+    public static final String SERVER_PICKY_PROPERTY = "org.sdshare.pickyservertests";
+
+    /**
      * Atom 1.0 namespace.
      */
     public final static String NS_ATOM = "http://www.w3.org/2005/Atom";
@@ -76,25 +81,9 @@ public interface IConstants {
     public final static String ELEMENT_SID = "resource";
 
     /**
-     * Element name which contains the server source locator prefix in a 
-     * TMShare Atom feed.
-     */
-    public final static String ELEMENT_PREFIX = "ServerSrcLocatorPrefix";
-
-    /**
-     * Element name which contains a dependency IRI in a TMShare Atom feed.
-     */
-    public final static String ELEMENT_DEPENDENCY = "dependency";
-
-    /**
      * Attribute value for the link type "alternate"
      */
     public static final String REL_ALTERNATE = "alternate";
-
-    /**
-     * Attribute value for the link type "self" 
-     */
-    public static final String REL_SELF = "self";
 
     /**
      * Attribute value for the link type "collectionfeed"

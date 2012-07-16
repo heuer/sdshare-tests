@@ -68,14 +68,15 @@ abstract class AbstractServerTestCase implements IConstants{
 
     /**
      * Tries to open a connection to the provided URI (which must be a valid URL) with
-     * an unknown media type and expects a 
+     * an unknown media type and expects a "Not Acceptable (406)" HTTP response.
      *
      * @param uri The URI to test
      */
     protected void testWithUnknownMediaType(final URI uri) throws Exception {
-        //TODO: Think about this
-//        final HttpURLConnection conn = Utils.connect(uri, _UNKNOWN_MEDIA_TYPE);
-//        assertEquals("Expected a Not Acceptable response for " + uri, HttpURLConnection.HTTP_NOT_ACCEPTABLE, conn.getResponseCode());
+        if (Utils.isPickyEnabled()) {
+            final HttpURLConnection conn = Utils.connect(uri, _UNKNOWN_MEDIA_TYPE);
+            assertEquals("Expected a Not Acceptable response for " + uri, HttpURLConnection.HTTP_NOT_ACCEPTABLE, conn.getResponseCode());
+        }
     }
 
     /**
