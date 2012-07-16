@@ -10,3 +10,8 @@ bin
 *.DS_Store
 *.swp
 *.out
+
+# Eclipse stuff
+.classpath
+.settings
+.project
