@@ -16,11 +16,12 @@ Example:
     java -Dorg.sdshare.serveraddress=http://localhost:8888 -jar sdshare-tests.jar
 
 
-Disable picky server tests
---------------------------
+Picky server tests
+------------------
 
-To disable picky tests (enabled by default), set the system property 
-`org.sdshare.pickyservertests` to `false`.
+The system property `org.sdshare.pickyservertests` is used to enable/disable
+picky server tests. `true` enables the tests (enabled by default), `false` disables
+them.
 
 Example:
 
