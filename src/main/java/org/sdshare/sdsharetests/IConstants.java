@@ -16,7 +16,7 @@
 package org.sdshare.sdsharetests;
 
 /**
- * Common constant values useful for Atomico client / server implementations.
+ * Common constant values.
  */
 public interface IConstants {
 
@@ -76,7 +76,7 @@ public interface IConstants {
     public final static String MEDIA_TYPE_RDF_XML = "application/rdf+xml";
 
     /**
-     * Element name which contains the subject identifier in a TMShare Atom feed.
+     * Element name which contains the resource identifier in a SDShare Atom feed.
      */
     public final static String ELEMENT_SID = "resource";
 
