@@ -38,9 +38,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests against the 
  * <a href="http://www.egovpt.org/fg/CWA_Part_1b#head-c41ad0664f1b6fb60343d7369e78ad90ea9b1bc3">fragments feed</a>.
- * 
- * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
- * @version $Rev:$ - $Date:$
  */
 @RunWith(Parameterized.class)
 public class TestFragmentsFeed extends AbstractServerTestCase {
@@ -74,7 +71,6 @@ public class TestFragmentsFeed extends AbstractServerTestCase {
 
     // we use this submethod so we can recurse along 'next' links
     private void check(URI uri) throws Exception {
-        validate(uri);
         final Document feed = super.fetchAtomFeedAsDOM(uri);
         final Nodes entries = query(feed, "atom:feed/atom:entry[sd:resource]");
         if (entries.size() == 0) {

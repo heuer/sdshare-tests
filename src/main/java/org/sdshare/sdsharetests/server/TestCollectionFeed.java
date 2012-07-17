@@ -35,9 +35,6 @@ import static org.junit.Assert.*;
 /**
  * Tests against the 
  * <a href="http://www.egovpt.org/fg/CWA_Part_1b#head-cfc066c9ca58d6eb6880b6c4d357b62e2b7a7403">collection feed</a>.
- * 
- * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
- * @version $Rev:$ - $Date:$
  */
 @RunWith(Parameterized.class)
 public class TestCollectionFeed extends AbstractServerTestCase {
@@ -69,8 +66,6 @@ public class TestCollectionFeed extends AbstractServerTestCase {
      */
     @Test
     public void testCollectionFeed() throws Exception {
-        validate(_uri);
-      
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
         // Fetch all links which point to a collection.
         final Nodes fragmentFeedLinks = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + REL_FRAGMENTS_FEED + "'][not(@type) or @type='application/atom+xml']");

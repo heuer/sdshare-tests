@@ -36,9 +36,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests against the 
  * <a href="http://www.egovpt.org/fg/CWA_Part_1b#head-103ee1c2a08e2c511bfbee5450274fcbd4e19dd6">snapshots feed</a>.
- * 
- * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
- * @version $Rev:$ - $Date:$
  */
 @RunWith(Parameterized.class)
 public class TestSnapshotsFeed extends AbstractServerTestCase {
@@ -67,7 +64,6 @@ public class TestSnapshotsFeed extends AbstractServerTestCase {
 
     @Test
     public void testSnapshotsFeed() throws Exception {
-        validate(_uri);
         final Document feed = super.fetchAtomFeedAsDOM(_uri);
         final Nodes links = query(feed, "atom:feed/atom:entry/atom:link[@rel='" + REL_SNAPSHOT + "']");
         if (links.size() == 0) {
