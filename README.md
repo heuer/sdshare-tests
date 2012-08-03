@@ -15,14 +15,3 @@ Example:
 
     java -Dorg.sdshare.serveraddress=http://localhost:8888 -jar sdshare-tests.jar
 
-Picky server tests
-------------------
-
-The system property `org.sdshare.pickyservertests` is used to enable/disable
-picky server tests. `true` enables the tests (enabled by default), `false` disables
-them.
-
-Example:
-
-    java -Dorg.sdshare.serveraddress=http://localhost:8888 -Dorg.sdshare.pickyservertests=false -jar sdshare-tests.jar
-
