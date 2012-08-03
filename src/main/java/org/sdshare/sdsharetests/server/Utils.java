@@ -62,16 +62,6 @@ final class Utils implements IConstants {
         return URI.create(addr);
     }
 
-    /**
-     * Returns if picky tests should be run (returns true by default).
-     * 
-     * @return If picky tests should be run.
-     */
-    public static boolean isPickyEnabled() {
-        final String picky = System.getProperty(SERVER_PICKY_PROPERTY, "true");
-        return !"false".equalsIgnoreCase(picky);
-    }
-
     public static XPathContext getDefaultXPathContext() {
         return _XPATH_CTX;
     }

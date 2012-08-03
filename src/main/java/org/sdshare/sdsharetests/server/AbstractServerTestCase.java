@@ -68,14 +68,26 @@ abstract class AbstractServerTestCase implements IConstants{
 
     /**
      * Tries to open a connection to the provided URI (which must be a valid URL) with
-     * an unknown media type and expects a "Not Acceptable (406)" HTTP response.
+     * an unknown media type and expects a "Not Acceptable (406)" HTTP response
+     * or a feed with Atom XML media type.
      *
      * @param uri The URI to test
      */
     protected void testWithUnknownMediaType(final URI uri) throws Exception {
-        if (Utils.isPickyEnabled()) {
-            final HttpURLConnection conn = Utils.connect(uri, _UNKNOWN_MEDIA_TYPE);
-            assertEquals("Expected a Not Acceptable response for " + uri, HttpURLConnection.HTTP_NOT_ACCEPTABLE, conn.getResponseCode());
+        // <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+        // Note: HTTP/1.1 servers are allowed to return responses which are
+        // not acceptable according to the accept headers sent in the
+        // request. In some cases, this may even be preferable to sending a
+        // 406 response. User agents are encouraged to inspect the headers of
+        // an incoming response to determine if it is acceptable.
+        final HttpURLConnection conn = Utils.connect(uri, _UNKNOWN_MEDIA_TYPE);
+        final int status = conn.getResponseCode();
+        if (HttpURLConnection.HTTP_NOT_ACCEPTABLE == status) {
+            // Ok, this is a reasonable answer
+        }
+        else if (HttpURLConnection.HTTP_OK == status) {
+            final MediaType responseMediaType = MediaType.valueOf(conn.getContentType());
+            assertTrue("Expected a compatible media type to " + MediaType.ATOM_XML + ", got " + responseMediaType.toString(), MediaType.ATOM_XML.isCompatible(responseMediaType));
         }
     }
 
