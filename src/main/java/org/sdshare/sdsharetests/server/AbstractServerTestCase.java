@@ -89,6 +89,9 @@ abstract class AbstractServerTestCase implements IConstants{
             final MediaType responseMediaType = MediaType.valueOf(conn.getContentType());
             assertTrue("Expected a compatible media type to " + MediaType.ATOM_XML + ", got " + responseMediaType.toString(), MediaType.ATOM_XML.isCompatible(responseMediaType));
         }
+        else {
+            fail("Expected either a 406 response or a 200 response, got: " + status);
+        }
     }
 
     /**
