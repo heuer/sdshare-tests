@@ -26,11 +26,6 @@ public interface IConstants {
     public static final String SERVER_ADDRESS_PROPERTY = "org.sdshare.serveraddress";
 
     /**
-     * Constant for the property name to enable/disable picky server tests.
-     */
-    public static final String SERVER_PICKY_PROPERTY = "org.sdshare.pickyservertests";
-
-    /**
      * Atom 1.0 namespace.
      */
     public final static String NS_ATOM = "http://www.w3.org/2005/Atom";
